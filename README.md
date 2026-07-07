@@ -45,12 +45,12 @@ appelé directement depuis le frontend.
 
 ## Logo
 
-Le header/footer utilise actuellement un logo texte généré (`src/components/Logo.jsx`).
-Pour utiliser le vrai logo Digitorizon :
-
-1. Déposer le fichier (SVG ou PNG) dans `src/assets/logo.svg` (ou `.png`).
-2. Dans `src/components/Logo.jsx`, remplacer le contenu par une balise `<img>`
-   pointant vers ce fichier.
+Le vrai logo Digitorizon est intégré dans `src/assets/logo.png` et utilisé par
+`src/components/Logo.jsx`. Le fichier a un fond transparent avec le texte
+"torizon" en blanc : sur fond sombre (header) il s'affiche directement, sur
+fond clair (footer, page succès) il est automatiquement placé dans une
+pastille navy pour rester lisible (`variant="dark"`, valeur par défaut du
+composant). Pour remplacer le fichier, il suffit d'écraser `src/assets/logo.png`.
 
 ## Compteur de places restantes
 

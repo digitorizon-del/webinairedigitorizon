@@ -1,23 +1,28 @@
+import logoImg from '../assets/logo.png'
+
 export default function Logo({ size = 'default', variant = 'dark' }) {
   const isSmall = size === 'small'
-  const isLight = variant === 'light'
+  const onDarkBackground = variant === 'light'
+
+  const image = (
+    <img
+      src={logoImg}
+      alt="Digitorizon"
+      className={`w-auto object-contain ${isSmall ? 'h-7' : 'h-9 md:h-10'}`}
+    />
+  )
+
+  if (onDarkBackground) {
+    return image
+  }
 
   return (
-    <div className="inline-flex items-center gap-2.5">
-      <div
-        className={`flex items-center justify-center rounded-xl bg-gradient-to-br from-orange to-orange-dark text-navy font-extrabold shadow-glow ${
-          isSmall ? 'w-8 h-8 text-base rounded-lg' : 'w-10 h-10 text-xl'
-        }`}
-      >
-        D
-      </div>
-      <span
-        className={`font-extrabold tracking-tight ${isSmall ? 'text-base' : 'text-lg'} ${
-          isLight ? 'text-white' : 'text-navy'
-        }`}
-      >
-        Digitorizon
-      </span>
+    <div
+      className={`inline-flex items-center rounded-xl bg-navy shadow-navy-glow ${
+        isSmall ? 'px-3 py-1.5' : 'px-4 py-2.5'
+      }`}
+    >
+      {image}
     </div>
   )
 }
