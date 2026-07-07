@@ -8,7 +8,7 @@ l'acompte de 10 000 FCFA passe directement du navigateur vers l'API MoneyFusion.
 
 - React 18 + Vite
 - React Router (route `/` et `/succes`)
-- CSS pur (aucune dépendance UI), charte graphique Digitorizon
+- Tailwind CSS (design system futuriste/premium : gradients, glassmorphism, glow, animations)
 - Aucun backend, aucune base de données, aucun stockage de données sensibles
 
 ## Démarrer en local
@@ -74,13 +74,30 @@ y sont codées en dur et modifiables si besoin.
   utilisé (non implémenté ici, cf. logique dans `src/utils/payment.js` si vous
   souhaitez l'ajouter).
 
+## Offre mise en avant
+
+La carte "Croissance Digitale" est marquée `featured: true` dans
+`src/data/offers.js` : badge "⭐ Offre recommandée", carte surélevée/agrandie
+et bordure lumineuse plus marquée. Pour changer l'offre mise en avant, déplacer
+le flag `featured` sur une autre entrée du tableau.
+
+## Preuve sociale
+
+Un petit toast ("Untel vient de réserver l'offre X") apparaît périodiquement
+en bas à gauche de l'écran (`src/components/SocialProofToast.jsx`). C'est une
+simulation 100% côté client (noms et offres tirés au hasard, intervalle
+aléatoire) — aucune vraie donnée de réservation n'est utilisée.
+
 ## Structure du projet
 
 ```
 src/
-  components/   Header, Footer, Logo, OfferCard, OfferSelection, CustomerForm
+  components/   Header, Footer, Logo, OfferCard, OfferSelection, CustomerForm,
+                Reveal (animation au scroll), AnimatedNumber (compteur animé),
+                SocialProofToast, BackgroundFX (fonds décoratifs)
   pages/        Home (page principale), Success (/succes)
-  data/         offres.js (contenu des 3 offres)
+  data/         offers.js (contenu des 3 offres)
+  hooks/        useReveal.js (IntersectionObserver pour les animations au scroll)
   utils/        seats.js (compteur de places), validation.js, payment.js
-  styles/       index.css (design system Digitorizon)
+  styles/       index.css (directives Tailwind + styles globaux)
 ```

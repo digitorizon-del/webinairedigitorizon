@@ -30,6 +30,7 @@ export const offers = [
     ],
     bonus: 'Audit gratuit de la présence en ligne actuelle',
     seatsStart: 4,
+    featured: true,
   },
   {
     id: 'croissance-continue',

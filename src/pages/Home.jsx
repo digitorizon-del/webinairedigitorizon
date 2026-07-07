@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import OfferSelection from '../components/OfferSelection'
 import CustomerForm from '../components/CustomerForm'
 import Footer from '../components/Footer'
+import SocialProofToast from '../components/SocialProofToast'
 import { offers } from '../data/offers'
 
 export default function Home() {
@@ -25,6 +26,7 @@ export default function Home() {
         <CustomerForm offer={selectedOffer} />
       </main>
       <Footer />
+      <SocialProofToast />
     </>
   )
 }

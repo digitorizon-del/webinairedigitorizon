@@ -2,12 +2,20 @@ import { useMemo, useState } from 'react'
 import { DEPOSIT_AMOUNT } from '../data/offers'
 import { validateForm, isFormValid } from '../utils/validation'
 import { initiatePayment } from '../utils/payment'
+import Reveal from './Reveal'
 
 function formatFcfa(amount) {
   return `${amount.toLocaleString('fr-FR')} FCFA`
 }
 
 const EMPTY_FIELDS = { fullName: '', phone: '', email: '', company: '' }
+
+const FIELDS_CONFIG = [
+  { id: 'fullName', label: 'Nom complet', type: 'text', autoComplete: 'name', placeholder: 'Ex : Aïssata Koné', error: 'Merci de renseigner votre nom complet.' },
+  { id: 'phone', label: 'Téléphone / WhatsApp', type: 'tel', autoComplete: 'tel', placeholder: 'Ex : +225 07 12 34 56 78', error: 'Format ivoirien attendu (ex : +225 07 12 34 56 78).' },
+  { id: 'email', label: 'Email', type: 'email', autoComplete: 'email', placeholder: 'Ex : contact@entreprise.com', error: 'Merci de renseigner une adresse email valide.' },
+  { id: 'company', label: "Nom de l'entreprise", type: 'text', autoComplete: 'organization', placeholder: 'Ex : Koné Business Services', error: 'Merci de renseigner le nom de votre entreprise.' },
+]
 
 export default function CustomerForm({ offer }) {
   const [fields, setFields] = useState(EMPTY_FIELDS)
@@ -45,7 +53,7 @@ export default function CustomerForm({ offer }) {
       setErrorMessage(
         err instanceof Error
           ? err.message
-          : "Une erreur est survenue lors de la connexion au service de paiement."
+          : 'Une erreur est survenue lors de la connexion au service de paiement.'
       )
       setSubmitting(false)
     }
@@ -56,113 +64,88 @@ export default function CustomerForm({ offer }) {
   const remaining = offer.price - DEPOSIT_AMOUNT
 
   return (
-    <section className="checkout" id="checkout">
-      <div className="container checkout__inner">
-        <div className="checkout__summary">
-          <h2 className="section-title">Récapitulatif</h2>
-          <dl className="checkout__summary-list">
-            <div>
-              <dt>Offre choisie</dt>
-              <dd>{offer.name}</dd>
-            </div>
-            <div>
-              <dt>Prix total</dt>
-              <dd>{formatFcfa(offer.price)}{offer.period ? offer.period : ''}</dd>
-            </div>
-            <div className="checkout__summary-highlight">
-              <dt>À payer maintenant</dt>
-              <dd>{formatFcfa(DEPOSIT_AMOUNT)}</dd>
-            </div>
-            <div>
-              <dt>Reste à payer à la livraison</dt>
-              <dd>{formatFcfa(remaining)}</dd>
-            </div>
-          </dl>
-        </div>
-
-        <form className="checkout__form" onSubmit={handleSubmit} noValidate>
-          <h2 className="section-title">Vos informations</h2>
-
-          <div className="field">
-            <label htmlFor="fullName">Nom complet</label>
-            <input
-              id="fullName"
-              type="text"
-              autoComplete="name"
-              value={fields.fullName}
-              onChange={(e) => handleChange('fullName', e.target.value)}
-              onBlur={() => handleBlur('fullName')}
-              className={touched.fullName && !fieldValidity.fullName ? 'field--invalid' : ''}
-              placeholder="Ex : Aïssata Koné"
-            />
-            {touched.fullName && !fieldValidity.fullName && (
-              <p className="field__error">Merci de renseigner votre nom complet.</p>
-            )}
+    <section className="relative py-20 md:py-28" id="checkout">
+      <div className="container mx-auto max-w-6xl px-5 grid grid-cols-1 md:grid-cols-[0.85fr_1.15fr] gap-8 items-start">
+        <Reveal>
+          <div className="rounded-3xl bg-gradient-to-br from-navy to-navy-dark p-8 text-white shadow-navy-glow">
+            <h2 className="text-xl md:text-2xl font-extrabold mb-7">Récapitulatif</h2>
+            <dl className="flex flex-col gap-4">
+              <div className="flex justify-between gap-3 border-b border-white/10 pb-3.5">
+                <dt className="text-sm text-white/50">Offre choisie</dt>
+                <dd className="font-bold text-right">{offer.name}</dd>
+              </div>
+              <div className="flex justify-between gap-3 border-b border-white/10 pb-3.5">
+                <dt className="text-sm text-white/50">Prix total</dt>
+                <dd className="font-bold text-right">
+                  {formatFcfa(offer.price)}
+                  {offer.period ? offer.period : ''}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-3 rounded-xl bg-orange/15 px-3 py-2.5">
+                <dt className="text-sm text-white/70">À payer maintenant</dt>
+                <dd className="font-extrabold text-orange text-right">
+                  {formatFcfa(DEPOSIT_AMOUNT)}
+                </dd>
+              </div>
+              <div className="flex justify-between gap-3">
+                <dt className="text-sm text-white/50">Reste à payer à la livraison</dt>
+                <dd className="font-bold text-right">{formatFcfa(remaining)}</dd>
+              </div>
+            </dl>
           </div>
+        </Reveal>
 
-          <div className="field">
-            <label htmlFor="phone">Téléphone / WhatsApp</label>
-            <input
-              id="phone"
-              type="tel"
-              autoComplete="tel"
-              value={fields.phone}
-              onChange={(e) => handleChange('phone', e.target.value)}
-              onBlur={() => handleBlur('phone')}
-              className={touched.phone && !fieldValidity.phone ? 'field--invalid' : ''}
-              placeholder="Ex : +225 07 12 34 56 78"
-            />
-            {touched.phone && !fieldValidity.phone && (
-              <p className="field__error">Format ivoirien attendu (ex : +225 07 12 34 56 78).</p>
-            )}
-          </div>
-
-          <div className="field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              value={fields.email}
-              onChange={(e) => handleChange('email', e.target.value)}
-              onBlur={() => handleBlur('email')}
-              className={touched.email && !fieldValidity.email ? 'field--invalid' : ''}
-              placeholder="Ex : contact@entreprise.com"
-            />
-            {touched.email && !fieldValidity.email && (
-              <p className="field__error">Merci de renseigner une adresse email valide.</p>
-            )}
-          </div>
-
-          <div className="field">
-            <label htmlFor="company">Nom de l'entreprise</label>
-            <input
-              id="company"
-              type="text"
-              autoComplete="organization"
-              value={fields.company}
-              onChange={(e) => handleChange('company', e.target.value)}
-              onBlur={() => handleBlur('company')}
-              className={touched.company && !fieldValidity.company ? 'field--invalid' : ''}
-              placeholder="Ex : Koné Business Services"
-            />
-            {touched.company && !fieldValidity.company && (
-              <p className="field__error">Merci de renseigner le nom de votre entreprise.</p>
-            )}
-          </div>
-
-          {errorMessage && <p className="checkout__error">⚠️ {errorMessage}</p>}
-
-          <button
-            type="submit"
-            className="button button--primary button--full"
-            disabled={!formValid || submitting}
+        <Reveal delay={120}>
+          <form
+            className="rounded-3xl glass-card p-8 shadow-md"
+            onSubmit={handleSubmit}
+            noValidate
           >
-            {submitting
-              ? 'Connexion au paiement...'
-              : `Payer ${formatFcfa(DEPOSIT_AMOUNT)} et réserver ma place`}
-          </button>
-        </form>
+            <h2 className="text-xl md:text-2xl font-extrabold text-navy mb-7">
+              Vos informations
+            </h2>
+
+            {FIELDS_CONFIG.map(({ id, label, type, autoComplete, placeholder, error }) => {
+              const invalid = touched[id] && !fieldValidity[id]
+              return (
+                <div className="mb-5" key={id}>
+                  <label htmlFor={id} className="mb-1.5 block text-sm font-bold text-navy">
+                    {label}
+                  </label>
+                  <input
+                    id={id}
+                    type={type}
+                    autoComplete={autoComplete}
+                    value={fields[id]}
+                    onChange={(e) => handleChange(id, e.target.value)}
+                    onBlur={() => handleBlur(id)}
+                    placeholder={placeholder}
+                    className={`w-full rounded-xl border-[1.5px] bg-white px-4 py-3.5 text-navy placeholder:text-navy/30 transition-colors focus:outline-none focus:border-orange ${
+                      invalid ? 'border-red-400' : 'border-navy/15'
+                    }`}
+                  />
+                  {invalid && <p className="mt-1.5 text-xs text-red-500">{error}</p>}
+                </div>
+              )
+            })}
+
+            {errorMessage && (
+              <p className="mb-4 rounded-xl bg-red-50 px-3.5 py-3 text-sm text-red-600">
+                ⚠️ {errorMessage}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={!formValid || submitting}
+              className="w-full rounded-full bg-gradient-to-r from-orange to-orange-dark px-7 py-4 font-extrabold text-white shadow-glow transition-all duration-200 hover:scale-[1.02] hover:shadow-glow-lg active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none"
+            >
+              {submitting
+                ? 'Connexion au paiement...'
+                : `Payer ${formatFcfa(DEPOSIT_AMOUNT)} et réserver ma place`}
+            </button>
+          </form>
+        </Reveal>
       </div>
     </section>
   )
