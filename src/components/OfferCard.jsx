@@ -22,10 +22,7 @@ export default function OfferCard({ offer, selected, onSelect }) {
   const featured = Boolean(offer.featured)
 
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(offer.id)}
-      aria-pressed={selected}
+    <div
       className={`
         group relative flex flex-col gap-4 rounded-3xl p-7 pt-8 text-left
         glass-card transition-all duration-300 ease-out
@@ -108,6 +105,14 @@ export default function OfferCard({ offer, selected, onSelect }) {
           <span>place{seats > 1 ? 's' : ''} restante{seats > 1 ? 's' : ''}</span>
         </div>
       </div>
-    </button>
+
+      <button
+        type="button"
+        onClick={() => onSelect(offer.id)}
+        className="mt-1 w-full rounded-full bg-gradient-to-r from-orange to-orange-dark px-6 py-3.5 text-sm font-extrabold text-white shadow-glow transition-all duration-200 hover:scale-[1.03] hover:shadow-glow-lg active:scale-[0.98]"
+      >
+        Je réserve ma place
+      </button>
+    </div>
   )
 }
