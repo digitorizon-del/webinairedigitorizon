@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { offers } from '../data/offers'
 
-const FIRST_NAMES = [
-  'Aïssata', 'Kouassi', 'Fatou', 'Ibrahim', 'Awa', 'Mamadou', 'Adjoua',
-  'Yao', 'Aminata', 'Koffi', 'Mariam', 'Bakary', 'Affoué', 'Souleymane',
-  'Nafissatou', 'Adama',
+const NAMES = [
+  "Kouassi N'Guessan", 'Yao Koné', 'Aya Traoré', 'Aïcha Diabaté', 'Bertrand Kouamé',
+  'Fatou Bamba', 'Ibrahim Ouattara', 'Adjoua Aka', 'Koffi Diallo', 'Mariam Kra',
+  'Sékou Touré', 'Aminata Coulibaly', 'Jean-Baptiste Zadi', 'Akissi Dosso', 'Moussa Konaté',
+  'Nadège Gnahoré', 'Serge Sanogo', "Awa N'Guessan", 'Christian Koné', 'Fatim Traoré',
+  'Désiré Diabaté', 'Rokia Kouamé', 'Franck Bamba', 'Assita Ouattara', 'Prince Aka',
+  'Béatrice Diallo', 'Cyrille Kra', 'Djénéba Touré', 'Armand Coulibaly', 'Vivianne Zadi',
 ]
 
 function randomItem(list) {
@@ -25,7 +28,7 @@ export default function SocialProofToast() {
     function scheduleNext() {
       showTimer = setTimeout(() => {
         setToast({
-          name: randomItem(FIRST_NAMES),
+          name: randomItem(NAMES),
           offer: randomItem(offers).name,
           key: Date.now(),
         })
@@ -33,7 +36,7 @@ export default function SocialProofToast() {
           setToast(null)
           scheduleNext()
         }, 5500)
-      }, randomDelay(20000, 45000))
+      }, randomDelay(30000, 60000))
     }
 
     scheduleNext()

@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { DEPOSIT_AMOUNT } from '../data/offers'
 import { validateForm, isFormValid } from '../utils/validation'
 import { initiatePayment } from '../utils/payment'
-import Reveal from './Reveal'
 
 function formatFcfa(amount) {
   return `${amount.toLocaleString('fr-FR')} FCFA`
@@ -64,89 +63,69 @@ export default function CustomerForm({ offer }) {
   const remaining = offer.price - DEPOSIT_AMOUNT
 
   return (
-    <section className="relative py-20 md:py-28" id="checkout">
-      <div className="container mx-auto max-w-6xl px-5 grid grid-cols-1 md:grid-cols-[0.85fr_1.15fr] gap-8 items-start">
-        <Reveal>
-          <div className="rounded-3xl bg-gradient-to-br from-navy to-navy-dark p-8 text-white shadow-navy-glow">
-            <h2 className="text-xl md:text-2xl font-extrabold mb-7">Récapitulatif</h2>
-            <dl className="flex flex-col gap-4">
-              <div className="flex justify-between gap-3 border-b border-white/10 pb-3.5">
-                <dt className="text-sm text-white/50">Offre choisie</dt>
-                <dd className="font-bold text-right">{offer.name}</dd>
-              </div>
-              <div className="flex justify-between gap-3 border-b border-white/10 pb-3.5">
-                <dt className="text-sm text-white/50">Prix total</dt>
-                <dd className="font-bold text-right">
-                  {formatFcfa(offer.price)}
-                  {offer.period ? offer.period : ''}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-3 rounded-xl bg-orange/15 px-3 py-2.5">
-                <dt className="text-sm text-white/70">À payer maintenant</dt>
-                <dd className="font-extrabold text-orange text-right">
-                  {formatFcfa(DEPOSIT_AMOUNT)}
-                </dd>
-              </div>
-              <div className="flex justify-between gap-3">
-                <dt className="text-sm text-white/50">Reste à payer à la livraison</dt>
-                <dd className="font-bold text-right">{formatFcfa(remaining)}</dd>
-              </div>
-            </dl>
-          </div>
-        </Reveal>
-
-        <Reveal delay={120}>
-          <form
-            className="rounded-3xl glass-card p-8 shadow-md"
-            onSubmit={handleSubmit}
-            noValidate
-          >
-            <h2 className="text-xl md:text-2xl font-extrabold text-navy mb-7">
-              Vos informations
-            </h2>
-
-            {FIELDS_CONFIG.map(({ id, label, type, autoComplete, placeholder, error }) => {
-              const invalid = touched[id] && !fieldValidity[id]
-              return (
-                <div className="mb-5" key={id}>
-                  <label htmlFor={id} className="mb-1.5 block text-sm font-bold text-navy">
-                    {label}
-                  </label>
-                  <input
-                    id={id}
-                    type={type}
-                    autoComplete={autoComplete}
-                    value={fields[id]}
-                    onChange={(e) => handleChange(id, e.target.value)}
-                    onBlur={() => handleBlur(id)}
-                    placeholder={placeholder}
-                    className={`w-full rounded-xl border-[1.5px] bg-white px-4 py-3.5 text-navy placeholder:text-navy/30 transition-colors focus:outline-none focus:border-orange ${
-                      invalid ? 'border-red-400' : 'border-navy/15'
-                    }`}
-                  />
-                  {invalid && <p className="mt-1.5 text-xs text-red-500">{error}</p>}
-                </div>
-              )
-            })}
-
-            {errorMessage && (
-              <p className="mb-4 rounded-xl bg-red-50 px-3.5 py-3 text-sm text-red-600">
-                ⚠️ {errorMessage}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={!formValid || submitting}
-              className="w-full rounded-full bg-gradient-to-r from-orange to-orange-dark px-7 py-4 font-extrabold text-white shadow-glow transition-all duration-200 hover:scale-[1.02] hover:shadow-glow-lg active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none"
-            >
-              {submitting
-                ? 'Connexion au paiement...'
-                : `Payer ${formatFcfa(DEPOSIT_AMOUNT)} et réserver ma place`}
-            </button>
-          </form>
-        </Reveal>
+    <div className="p-6 sm:p-8">
+      <div className="mb-6 rounded-2xl bg-gradient-to-br from-navy to-navy-dark p-5 text-white">
+        <p className="mb-1 text-xs text-white/50">Offre choisie</p>
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className="text-lg font-extrabold">{offer.name}</h3>
+          <span className="font-extrabold text-orange">
+            {formatFcfa(offer.price)}
+            {offer.period ? offer.period : ''}
+          </span>
+        </div>
+        {offer.bonus && <p className="mt-2 text-xs text-white/70">🎁 {offer.bonus}</p>}
+        <div className="mt-3 flex items-center justify-between rounded-xl bg-orange/15 px-3 py-2.5">
+          <span className="text-xs text-white/70">À payer maintenant</span>
+          <span className="text-sm font-extrabold text-orange">{formatFcfa(DEPOSIT_AMOUNT)}</span>
+        </div>
+        <p className="mt-2 text-[11px] text-white/40">
+          Reste {formatFcfa(remaining)} à payer à la livraison
+        </p>
       </div>
-    </section>
+
+      <form onSubmit={handleSubmit} noValidate>
+        <h2 className="mb-5 text-lg font-extrabold text-navy">Vos informations</h2>
+
+        {FIELDS_CONFIG.map(({ id, label, type, autoComplete, placeholder, error }) => {
+          const invalid = touched[id] && !fieldValidity[id]
+          return (
+            <div className="mb-5" key={id}>
+              <label htmlFor={id} className="mb-1.5 block text-sm font-bold text-navy">
+                {label}
+              </label>
+              <input
+                id={id}
+                type={type}
+                autoComplete={autoComplete}
+                value={fields[id]}
+                onChange={(e) => handleChange(id, e.target.value)}
+                onBlur={() => handleBlur(id)}
+                placeholder={placeholder}
+                className={`w-full rounded-xl border-[1.5px] bg-white px-4 py-3.5 text-navy placeholder:text-navy/30 transition-colors focus:outline-none focus:border-orange ${
+                  invalid ? 'border-red-400' : 'border-navy/15'
+                }`}
+              />
+              {invalid && <p className="mt-1.5 text-xs text-red-500">{error}</p>}
+            </div>
+          )
+        })}
+
+        {errorMessage && (
+          <p className="mb-4 rounded-xl bg-red-50 px-3.5 py-3 text-sm text-red-600">
+            ⚠️ {errorMessage}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={!formValid || submitting}
+          className="w-full rounded-full bg-gradient-to-r from-orange to-orange-dark px-7 py-4 font-extrabold text-white shadow-glow transition-all duration-200 hover:scale-[1.02] hover:shadow-glow-lg active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none"
+        >
+          {submitting
+            ? 'Connexion au paiement...'
+            : `Payer ${formatFcfa(DEPOSIT_AMOUNT)} et réserver ma place`}
+        </button>
+      </form>
+    </div>
   )
 }
