@@ -1,24 +1,8 @@
-import { useEffect, useState } from 'react'
-import { getRemainingSeats } from '../utils/seats'
-import AnimatedNumber from './AnimatedNumber'
-
 function formatFcfa(amount) {
   return `${amount.toLocaleString('fr-FR')} FCFA`
 }
 
 export default function OfferCard({ offer, selected, onSelect }) {
-  const [seats, setSeats] = useState(() => getRemainingSeats(offer.seatsStart))
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeats(getRemainingSeats(offer.seatsStart))
-    }, 15000)
-    return () => clearInterval(interval)
-  }, [offer.seatsStart])
-
-  const isLow = seats <= 1
-  const seatsTaken = offer.seatsStart - seats
-  const progressPercent = Math.min(100, Math.max(0, (seatsTaken / offer.seatsStart) * 100))
   const featured = Boolean(offer.featured)
 
   return (
@@ -80,31 +64,6 @@ export default function OfferCard({ offer, selected, onSelect }) {
       <p className="rounded-xl bg-navy/5 px-3 py-2.5 text-sm font-bold text-navy">
         🎁 {offer.bonus}
       </p>
-
-      <div className="flex flex-col gap-1.5">
-        <div className="flex items-center justify-between text-xs font-semibold text-navy/50">
-          <span>{seatsTaken} / {offer.seatsStart} places prises</span>
-        </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-navy/10">
-          <div
-            className={`h-full rounded-full transition-all duration-700 ease-out ${
-              isLow ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-orange to-orange-dark'
-            }`}
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-        <div
-          className={`flex items-center gap-2 rounded-full px-3 py-1.5 w-fit text-sm font-extrabold ${
-            isLow
-              ? 'bg-red-50 text-red-600 animate-pulse-glow-alert'
-              : 'bg-orange/10 text-orange-dark animate-pulse-glow'
-          }`}
-        >
-          <span>🔥</span>
-          <AnimatedNumber value={seats} className="animate-pulse" />
-          <span>place{seats > 1 ? 's' : ''} restante{seats > 1 ? 's' : ''}</span>
-        </div>
-      </div>
 
       <button
         type="button"

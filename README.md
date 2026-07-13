@@ -52,27 +52,21 @@ fond clair (footer, page succès) il est automatiquement placé dans une
 pastille navy pour rester lisible (`variant="dark"`, valeur par défaut du
 composant). Pour remplacer le fichier, il suffit d'écraser `src/assets/logo.png`.
 
-## Compteur de places restantes
-
-Le compteur affiché sur chaque carte d'offre est **fictif** (aucune base de
-données) : il décroît linéairement en fonction du temps entre la mise en ligne
-du site et la date du webinaire, jusqu'à un minimum de 1 place. La logique est
-dans `src/utils/seats.js` — les dates de référence (mise en ligne / webinaire)
-y sont codées en dur et modifiables si besoin.
-
 ## Paiement MoneyFusion
 
 - Endpoint appelé : `https://pay.moneyfusion.net/Webinaire_Digitorizon/2742ead9add4277d/pay/`
-- Au clic sur le bouton de paiement, le frontend envoie une requête `POST`
-  avec les informations du client et de l'offre, puis redirige vers l'URL de
-  paiement renvoyée par MoneyFusion (`data.url`).
-- La page `/succes` (`return_url`) affiche un message de remerciement
-  générique, car MoneyFusion ne transmet pas de façon fiable le statut du
-  paiement dans les paramètres d'URL de retour. Pour une vérification fiable
-  du statut réel du paiement, l'endpoint
-  `GET https://www.pay.moneyfusion.net/paiementNotif/{token}` peut être
-  utilisé (non implémenté ici, cf. logique dans `src/utils/payment.js` si vous
-  souhaitez l'ajouter).
+- Au clic sur le bouton de paiement (dans le pop-up de réservation), le
+  frontend envoie une requête `POST` avec les informations du client et de
+  l'offre, puis redirige vers l'URL de paiement renvoyée par MoneyFusion
+  (`data.url`). MoneyFusion ajoute automatiquement le token de la transaction
+  en paramètre de la `return_url` fournie (`?token=...`).
+- La page `/succes` lit ce token dans l'URL et appelle
+  `GET https://www.pay.moneyfusion.net/paiementNotif/{token}` pour vérifier le
+  statut réel de la transaction (`src/utils/payment.js`,
+  fonction `checkPaymentStatus`). Elle affiche ensuite un état différent selon
+  le statut retourné : succès (`paid`), en attente (`pending`), échec
+  (`failed` / `no paid`), ou erreur générique si le token est absent/invalide
+  ou l'appel échoue.
 
 ## Offre mise en avant
 
@@ -92,12 +86,12 @@ aléatoire) — aucune vraie donnée de réservation n'est utilisée.
 
 ```
 src/
-  components/   Header, Footer, Logo, OfferCard, OfferSelection, CustomerForm,
-                Reveal (animation au scroll), AnimatedNumber (compteur animé),
+  components/   Header, Footer, Logo, OfferCard, OfferSelection, Modal,
+                CustomerForm, Reveal (animation au scroll),
                 SocialProofToast, BackgroundFX (fonds décoratifs)
   pages/        Home (page principale), Success (/succes)
   data/         offers.js (contenu des 3 offres)
   hooks/        useReveal.js (IntersectionObserver pour les animations au scroll)
-  utils/        seats.js (compteur de places), validation.js, payment.js
+  utils/        validation.js, payment.js (création + vérification du paiement)
   styles/       index.css (directives Tailwind + styles globaux)
 ```

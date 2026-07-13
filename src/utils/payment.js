@@ -1,5 +1,6 @@
 const MONEYFUSION_ENDPOINT =
   'https://pay.moneyfusion.net/Webinaire_Digitorizon/2742ead9add4277d/pay/'
+const MONEYFUSION_STATUS_ENDPOINT = 'https://www.pay.moneyfusion.net/paiementNotif'
 
 export async function initiatePayment({ offer, depositAmount, customer }) {
   const payload = {
@@ -49,4 +50,27 @@ export async function initiatePayment({ offer, depositAmount, customer }) {
   }
 
   return data.url
+}
+
+export async function checkPaymentStatus(token) {
+  let response
+  try {
+    response = await fetch(`${MONEYFUSION_STATUS_ENDPOINT}/${token}`)
+  } catch {
+    throw new Error(
+      'Impossible de contacter le service de paiement. Vérifiez votre connexion internet et réessayez.'
+    )
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      `Le service de paiement est momentanément indisponible (erreur ${response.status}). Merci de réessayer dans quelques instants.`
+    )
+  }
+
+  try {
+    return await response.json()
+  } catch {
+    throw new Error('Réponse inattendue du service de paiement. Merci de réessayer.')
+  }
 }

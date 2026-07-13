@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import OfferSelection from '../components/OfferSelection'
 import CustomerForm from '../components/CustomerForm'
@@ -8,8 +9,17 @@ import SocialProofToast from '../components/SocialProofToast'
 import { offers } from '../data/offers'
 
 export default function Home() {
+  const [searchParams] = useSearchParams()
   const [selectedId, setSelectedId] = useState(null)
   const [modalOpen, setModalOpen] = useState(false)
+
+  useEffect(() => {
+    const offerId = searchParams.get('offer')
+    if (offerId && offers.some((o) => o.id === offerId)) {
+      setSelectedId(offerId)
+      setModalOpen(true)
+    }
+  }, [searchParams])
 
   function handleSelect(id) {
     setSelectedId(id)
