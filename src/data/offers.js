@@ -12,7 +12,6 @@ export const offers = [
       'Livraison en 4 jours',
     ],
     bonus: '1 mois de support technique offert',
-    seatsStart: 10,
   },
   {
     id: 'croissance-digitale',
@@ -29,7 +28,6 @@ export const offers = [
       'Livraison en 5 jours',
     ],
     bonus: 'Audit gratuit de la présence en ligne actuelle',
-    seatsStart: 4,
     featured: true,
   },
   {
@@ -46,7 +44,6 @@ export const offers = [
     ],
     note: 'Budget publicitaire non inclus, à la charge du client',
     bonus: '1er mois de community management à moitié prix',
-    seatsStart: 5,
   },
 ]
 
